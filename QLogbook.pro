@@ -13,8 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    logtablemodel.cpp \
+    logentry.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    logtablemodel.h \
+    logentry.h
 
 FORMS    += mainwindow.ui
