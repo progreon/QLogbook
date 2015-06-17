@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "logtablemodel.h"
+#include "../model/logtablemodel.h"
 
 namespace Ui {
 class MainWindow;

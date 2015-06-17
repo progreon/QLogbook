@@ -13,15 +13,19 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    logtablemodel.cpp \
-    logentry.cpp \
-    entrydialog.cpp
+    model/logbookmodel.cpp \
+    model/logentry.cpp \
+    model/logtablemodel.cpp \
+    view/entrydialog.cpp \
+    view/mainwindow.cpp
 
-HEADERS  += mainwindow.h \
-    logtablemodel.h \
-    logentry.h \
-    entrydialog.h
+HEADERS  += \
+    model/logbookmodel.h \
+    model/logentry.h \
+    model/logtablemodel.h \
+    view/entrydialog.h \
+    view/mainwindow.h
 
-FORMS    += mainwindow.ui \
-    entrydialog.ui
+FORMS    += \
+    view/entrydialog.ui \
+    view/mainwindow.ui

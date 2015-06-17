@@ -2,7 +2,7 @@
 #define ENTRYDIALOG_H
 
 #include <QDialog>
-#include "logentry.h"
+#include "../model/logentry.h"
 
 namespace Ui {
 class EntryDialog;

@@ -29,7 +29,7 @@ void LogTableModel::modifyEntry(int index, const LogEntry &entry)
     if (index >= 0 && index < _entries.count()) {
         _entries[index] = entry;
         std::stable_sort(_entries.begin(), _entries.end());
-        //        endResetModel();
+        //endResetModel();
     }
 }
 
