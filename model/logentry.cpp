@@ -1,13 +1,12 @@
 #include "logentry.h"
 
-LogEntry::LogEntry(const QDate &date, const QTime &duration, int logType, const QString &description)
+LogEntry::LogEntry(const QDate &date, const QTime &duration, EntryType logType, const QString &description)
     : _date(date)
     , _duration(duration)
     , _type(logType)
     , _description(description)
 {
-    logTypes << "Literatuur";
-    logTypes << "Implementatie";
+
 }
 
 LogEntry::~LogEntry()
@@ -25,9 +24,9 @@ void LogEntry::setDuration(const QTime &duration)
     _duration = duration;
 }
 
-void LogEntry::setType(int typeID)
+void LogEntry::setType(EntryType type)
 {
-    _type = typeID;
+    _type = type;
 }
 
 void LogEntry::setDescription(const QString &description)

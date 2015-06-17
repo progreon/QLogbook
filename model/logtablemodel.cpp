@@ -1,15 +1,9 @@
 #include "logtablemodel.h"
 
-LogTableModel::LogTableModel()
+LogTableModel::LogTableModel(LogbookModel *model)
+    : _model(model)
 {
-    QString desc("Dit is een beschrijving. ");
-    QString longDesc("Nu is dit een langere beschrijving. ");
-    _entries << LogEntry(QDate(2015, 6, 15), QTime(0, 30), 0, desc);
-    desc.append(longDesc);
-    _entries << LogEntry(QDate(2015, 6, 17), QTime(1, 30), 1, desc);
-    desc.append(longDesc);
-    _entries << LogEntry(QDate(2015, 6, 16), QTime(2, 30), 0, desc);
-    std::stable_sort(_entries.begin(), _entries.end());
+
 }
 
 LogTableModel::~LogTableModel()
@@ -17,33 +11,15 @@ LogTableModel::~LogTableModel()
 
 }
 
-void LogTableModel::addEntry(const LogEntry &entry)
+void LogTableModel::refreshTable()
 {
-    _entries << entry;
-    std::stable_sort(_entries.begin(), _entries.end());
-    endResetModel();
-}
-
-void LogTableModel::modifyEntry(int index, const LogEntry &entry)
-{
-    if (index >= 0 && index < _entries.count()) {
-        _entries[index] = entry;
-        std::stable_sort(_entries.begin(), _entries.end());
-        //endResetModel();
-    }
-}
-
-void LogTableModel::removeEntry(int index)
-{
-    if (index >= 0 && index < _entries.count()) {
-        _entries.removeAt(index);
-        endResetModel();
-    }
+//    resetInternalData();
+    this->endResetModel();
 }
 
 int LogTableModel::rowCount(const QModelIndex &parent) const
 {
-    return _entries.count();
+    return _model->entries()->count();
 }
 
 int LogTableModel::columnCount(const QModelIndex &parent) const
@@ -55,18 +31,19 @@ QVariant LogTableModel::data(const QModelIndex &index, int role) const
 {
     QVariant value;
     if (role == Qt::DisplayRole) {
+        LogEntry entry = _model->entries()->at(index.row());
         switch (index.column()) {
         case 0:
-            value = _entries.at(index.row()).date().toString("dd/MM/yyyy");
+            value = entry.date().toString("dd/MM/yyyy");
             break;
         case 1:
-            value = _entries.at(index.row()).duration().toString("H'h'mm'm'");
+            value = entry.duration().toString("H'h'mm'm'");
             break;
         case 2:
-            value = _entries.at(index.row()).type();
+            value = entry.type().name();
             break;
         case 3:
-            value = _entries.at(index.row()).description();
+            value = entry.description();
             break;
         default:
             value = QString("ERROR");

@@ -17,14 +17,16 @@ SOURCES += main.cpp\
     model/logentry.cpp \
     model/logtablemodel.cpp \
     view/entrydialog.cpp \
-    view/mainwindow.cpp
+    view/mainwindow.cpp \
+    model/entrytype.cpp
 
 HEADERS  += \
     model/logbookmodel.h \
     model/logentry.h \
     model/logtablemodel.h \
     view/entrydialog.h \
-    view/mainwindow.h
+    view/mainwindow.h \
+    model/entrytype.h
 
 FORMS    += \
     view/entrydialog.ui \

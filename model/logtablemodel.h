@@ -2,21 +2,19 @@
 #define LOGTABLEMODEL_H
 
 #include <QAbstractTableModel>
-#include "logentry.h"
 #include <QList>
+#include "logbookmodel.h"
+#include "logentry.h"
 
 class LogTableModel : public QAbstractTableModel
 {
 public:
-    LogTableModel();
+    LogTableModel(LogbookModel *model);
     ~LogTableModel();
-    void addEntry(const LogEntry &entry);
-    QList<LogEntry> entries() const {return _entries;}
-    void modifyEntry(int index, const LogEntry &entry);
-    void removeEntry(int index);
+    void refreshTable();
 
 private:
-    QList<LogEntry> _entries;
+    LogbookModel *_model;
 
     // QAbstractItemModel interface
 public:

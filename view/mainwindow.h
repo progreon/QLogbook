@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "../model/logtablemodel.h"
+#include "../model/logbookmodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,6 +28,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    LogbookModel *_model;
     LogTableModel *tableModel;
 };
 
