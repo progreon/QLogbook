@@ -9,12 +9,36 @@ LogTableModel::LogTableModel()
     _entries << LogEntry(QDate(2015, 6, 17), QTime(1, 30), 1, desc);
     desc.append(longDesc);
     _entries << LogEntry(QDate(2015, 6, 16), QTime(2, 30), 0, desc);
-    std::sort(_entries.begin(), _entries.end());
+    std::stable_sort(_entries.begin(), _entries.end());
 }
 
 LogTableModel::~LogTableModel()
 {
 
+}
+
+void LogTableModel::addEntry(const LogEntry &entry)
+{
+    _entries << entry;
+    std::stable_sort(_entries.begin(), _entries.end());
+    endResetModel();
+}
+
+void LogTableModel::modifyEntry(int index, const LogEntry &entry)
+{
+    if (index >= 0 && index < _entries.count()) {
+        _entries[index] = entry;
+        std::stable_sort(_entries.begin(), _entries.end());
+        //        endResetModel();
+    }
+}
+
+void LogTableModel::removeEntry(int index)
+{
+    if (index >= 0 && index < _entries.count()) {
+        _entries.removeAt(index);
+        endResetModel();
+    }
 }
 
 int LogTableModel::rowCount(const QModelIndex &parent) const
@@ -46,6 +70,7 @@ QVariant LogTableModel::data(const QModelIndex &index, int role) const
             break;
         default:
             value = QString("ERROR");
+            break;
         }
     }
     return value;
@@ -69,10 +94,11 @@ QVariant LogTableModel::headerData(int section, Qt::Orientation orientation, int
             value = QString("Beschrijving");
             break;
         default:
+            value = QString("ERROR");
             break;
         }
     } else if (role == Qt::DisplayRole && orientation == Qt::Vertical) {
-        value = section;
+        value = section + 1;
     }
     return value;
 }

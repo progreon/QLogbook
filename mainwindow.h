@@ -16,6 +16,15 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void on_btnNew_clicked();
+
+    void on_btnEdit_clicked();
+
+    void on_btnDelete_clicked();
+
+    void on_btnPdf_clicked();
+
 private:
     Ui::MainWindow *ui;
     LogTableModel *tableModel;

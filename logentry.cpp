@@ -40,3 +40,23 @@ bool LogEntry::operator<(const LogEntry &logEntry) const
     return this->date() < logEntry.date();
 }
 
+//bool LogEntry::cmpLtDates(const LogEntry &entry1, const LogEntry &entry2)
+//{
+//    return entry1.date() < entry2.date();
+//}
+
+//bool LogEntry::cmpLtDurations(const LogEntry &entry1, const LogEntry &entry2)
+//{
+//    return entry1.duration() < entry2.duration();
+//}
+
+//bool LogEntry::cmpLtTypes(const LogEntry &entry1, const LogEntry &entry2)
+//{
+//    return entry1.type() < entry2.type();
+//}
+
+//bool LogEntry::cmpLtDescriptions(const LogEntry &entry1, const LogEntry &entry2)
+//{
+//    return entry1.description() < entry2.description();
+//}
+
