@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
+#include <QFileDialog>
 #include "entrydialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -61,5 +62,11 @@ void MainWindow::on_btnDelete_clicked()
 
 void MainWindow::on_btnPdf_clicked()
 {
-
+    QFileDialog fileDialog(this, "Exporteer pdf", QDir::homePath().append(QDir::separator()).append(".pdf"), tr("PDF Bestanden (*.pdf)"));
+    fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+    if (fileDialog.exec() == QFileDialog::AcceptSave) {
+        QString filePath = fileDialog.selectedFiles().at(0);
+        qDebug() << "saving to:" << filePath;
+        _model->saveLogbook(filePath);
+    }
 }

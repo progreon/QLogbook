@@ -14,6 +14,7 @@ public:
     void deleteEntry(int index);
     const QList<LogEntry> *entries() const {return &_entries;}
     void modifyEntry(int index, const LogEntry &entry);
+    bool saveLogbook(const QString &fileName);
     QList<EntryType> types() const {return _types;}
 
 private:
