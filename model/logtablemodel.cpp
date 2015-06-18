@@ -13,7 +13,6 @@ LogTableModel::~LogTableModel()
 
 void LogTableModel::refreshTable()
 {
-//    resetInternalData();
     this->endResetModel();
 }
 

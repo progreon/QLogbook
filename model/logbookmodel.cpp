@@ -8,20 +8,14 @@
 #include <QTextTableFormat>
 #include <QTextCursor>
 #include <QPrinter>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QByteArray>
 
 LogbookModel::LogbookModel()
 {
-    _types << EntryType(0, "Literatuur");
-    _types << EntryType(1, "Implementatie");
-
-    QString desc("Dit is een beschrijving. ");
-    QString longDesc("Nu is dit een langere beschrijving. ");
-    _entries << LogEntry(QDate(2015, 6, 15), QTime(0, 30), _types.at(0), desc);
-    desc.append(longDesc);
-    _entries << LogEntry(QDate(2015, 6, 17), QTime(1, 30), _types.at(1), desc);
-    desc.append(longDesc);
-    _entries << LogEntry(QDate(2015, 6, 16), QTime(2, 30), _types.at(0), desc);
-    std::stable_sort(_entries.begin(), _entries.end());
+    startEmptyLogbook();
 }
 
 LogbookModel::~LogbookModel()
@@ -33,24 +27,27 @@ void LogbookModel::addEntry(const LogEntry &entry)
 {
     _entries << entry;
     std::stable_sort(_entries.begin(), _entries.end());
+    _isEdited = true;
+}
+
+QString LogbookModel::currentOpenFile() const
+{
+    if (_currentOpenFile.compare("") == 0) {
+        return "New file";
+    } else {
+        return _currentOpenFile;
+    }
 }
 
 void LogbookModel::deleteEntry(int index)
 {
     if (index >= 0 && index < _entries.count()) {
         _entries.removeAt(index);
+        _isEdited = true;
     }
 }
 
-void LogbookModel::modifyEntry(int index, const LogEntry &entry)
-{
-    if (index >= 0 && index < _entries.count()) {
-        _entries[index] = entry;
-        std::stable_sort(_entries.begin(), _entries.end());
-    }
-}
-
-bool LogbookModel::saveLogbook(const QString &fileName)
+bool LogbookModel::exportLogbookPDF(const QString &fileName)
 {
     int i = fileName.lastIndexOf(QDir::separator());
     QString folderURI;
@@ -59,7 +56,6 @@ bool LogbookModel::saveLogbook(const QString &fileName)
     } else {
         folderURI = ".";
     }
-//    qDebug() << folderURI;
     QDir folder(folderURI);
     if (folder.exists()) {
         QPrinter printer(QPrinter::HighResolution);
@@ -69,7 +65,7 @@ bool LogbookModel::saveLogbook(const QString &fileName)
 
         QTextDocument *document = new QTextDocument();
         QTextCursor cursor(document);
-        cursor.insertText("Dit is een testvoorbeeld van een logboek.\n\n");
+        cursor.insertText("Dit is een gegenereerd logboek.\n\n");
         QTextTableFormat tableFormat;
         tableFormat.setCellSpacing(0);
         tableFormat.setCellPadding(3);
@@ -118,3 +114,114 @@ bool LogbookModel::saveLogbook(const QString &fileName)
     }
 }
 
+void LogbookModel::loadLogbookJSON(const QString &fileName)
+{
+    QFile jsonFile(fileName);
+    if (jsonFile.open(QFile::ReadOnly)) {
+        QByteArray byteArray = jsonFile.readAll();
+        QJsonDocument jsonDoc(QJsonDocument::fromJson(byteArray));
+        jsonFile.close();
+        QJsonObject jsonLogbook = jsonDoc.object();
+
+        _types = QList<EntryType>();
+        _entries = QList<LogEntry>();
+
+        _types.reserve(jsonLogbook["numentrytypes"].toInt());
+        QJsonArray jsonEntryTypes = jsonLogbook["entrytypes"].toArray();
+        for (int i=0; i<jsonEntryTypes.count(); i++) {
+            QJsonObject jsonEntryType = jsonEntryTypes.at(i).toObject();
+            _types.append(EntryType(jsonEntryType["id"].toInt(), jsonEntryType["name"].toString()));
+        }
+
+        QJsonArray jsonEntries = jsonLogbook["entries"].toArray();
+        for (int i=0; i<jsonEntries.count(); i++) {
+            QJsonObject jsonEntry = jsonEntries.at(i).toObject();
+            QDate date = QDate::fromString(jsonEntry["date"].toString(), "dd/MM/yyyy");
+            QTime duration = QTime::fromString(jsonEntry["duration"].toString(), "H'h'm'm'");
+            _entries.append(LogEntry(date, duration, _types.at(jsonEntry["entrytype"].toInt()), jsonEntry["description"].toString()));
+        }
+        std::stable_sort(_entries.begin(), _entries.end());
+
+        _currentOpenFile = fileName;
+        _isEdited = false;
+    } else {
+        qWarning() << "Could not open file:" << jsonFile.fileName();
+    }
+}
+
+void LogbookModel::modifyEntry(int index, const LogEntry &entry)
+{
+    if (index >= 0 && index < _entries.count()) {
+        _entries[index] = entry;
+        std::stable_sort(_entries.begin(), _entries.end());
+        _isEdited = true;
+    }
+}
+
+void LogbookModel::saveLogbookJSON()
+{
+    if (_currentOpenFile.compare("") != 0 && _isEdited) {
+        saveAsLogbookJSON(_currentOpenFile);
+    }
+}
+
+void LogbookModel::saveAsLogbookJSON(const QString &fileName)
+{
+    QJsonObject jsonLogbook;
+
+    jsonLogbook["numentrytypes"] = _types.count();
+
+    QJsonArray jsonEntryTypes;
+    for (int i=0; i<_types.count(); i++) {
+        QJsonObject jsonEntryType;
+        EntryType type = _types.at(i);
+        jsonEntryType["id"] = type.id();
+        jsonEntryType["name"] = type.name();
+        jsonEntryTypes.append(jsonEntryType);
+    }
+    jsonLogbook["entrytypes"] = jsonEntryTypes;
+
+    QJsonArray jsonEntries;
+    for (int i=0; i<_entries.count(); i++) {
+        QJsonObject jsonEntry;
+        LogEntry entry = _entries.at(i);
+        jsonEntry["date"] = entry.date().toString("dd/MM/yyyy");
+        jsonEntry["duration"] = entry.duration().toString("H'h'm'm'");
+        jsonEntry["entrytype"] = entry.type().id();
+        jsonEntry["description"] = entry.description();
+        jsonEntries.append(jsonEntry);
+    }
+    jsonLogbook["entries"] = jsonEntries;
+
+    QJsonDocument jsonDoc(jsonLogbook);
+    QFile jsonFile(fileName);
+    if (jsonFile.open(QFile::WriteOnly)) {
+        jsonFile.write(jsonDoc.toJson());
+        jsonFile.close();
+        _isEdited = false;
+        _isNew = false;
+        _currentOpenFile = fileName;
+    } else {
+        qWarning() << "Could not open file:" << jsonFile.fileName();
+    }
+}
+
+void LogbookModel::startEmptyLogbook()
+{
+    _types = QList<EntryType>();
+    _entries = QList<LogEntry>();
+    _types << EntryType(0, "Literatuur");
+    _types << EntryType(1, "Implementatie");
+    _isEdited = false;
+    _isNew = true;
+    _currentOpenFile = "";
+
+//    QString desc("Dit is een beschrijving. ");
+//    QString longDesc("Nu is dit een langere beschrijving. ");
+//    _entries << LogEntry(QDate(2015, 6, 15), QTime(0, 30), _types.at(0), desc);
+//    desc.append(longDesc);
+//    _entries << LogEntry(QDate(2015, 6, 17), QTime(1, 30), _types.at(1), desc);
+//    desc.append(longDesc);
+//    _entries << LogEntry(QDate(2015, 6, 16), QTime(2, 30), _types.at(0), desc);
+//    std::stable_sort(_entries.begin(), _entries.end());
+}

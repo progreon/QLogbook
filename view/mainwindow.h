@@ -26,10 +26,21 @@ private slots:
 
     void on_btnPdf_clicked();
 
+    void on_action_Save_triggered();
+
+    void on_action_Open_triggered();
+
+    void on_action_Save_As_triggered();
+
+    void on_action_Nieuw_triggered();
+
 private:
+    void updateView();
     Ui::MainWindow *ui;
     LogbookModel *_model;
     LogTableModel *tableModel;
+    QString windowTitle;
+    QString currDir;
 };
 
 #endif // MAINWINDOW_H
