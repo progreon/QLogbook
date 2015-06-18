@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDebug>
+#include <QCloseEvent>
 #include <QMessageBox>
 #include <QFileDialog>
 #include "entrydialog.h"
@@ -150,4 +151,27 @@ void MainWindow::on_action_Nieuw_triggered()
     _model->startEmptyLogbook();
     tableModel->refreshTable();
     updateView();
+}
+
+void MainWindow::on_actionE_xit_triggered()
+{
+    this->close();
+}
+
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+    if (_model->isEdited()) {
+        int result = QMessageBox::question(this, "Open bestand opslaan?", "Wilt u het open bestand eerst opslaan?", QMessageBox::Cancel, QMessageBox::No, QMessageBox::Yes);
+        if (result == QMessageBox::Yes) {
+            on_action_Save_triggered();
+            if (_model->isEdited()) {
+                e->ignore();
+                return; // we did not save!
+            }
+        } else if (result == QMessageBox::Cancel) {
+            e->ignore();
+            return;
+        }
+    }
+    e->accept();
 }

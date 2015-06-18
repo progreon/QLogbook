@@ -34,6 +34,8 @@ private slots:
 
     void on_action_Nieuw_triggered();
 
+    void on_actionE_xit_triggered();
+
 private:
     void updateView();
     Ui::MainWindow *ui;
@@ -41,6 +43,10 @@ private:
     LogTableModel *tableModel;
     QString windowTitle;
     QString currDir;
+
+    // QWidget interface
+protected:
+    void closeEvent(QCloseEvent *e);
 };
 
 #endif // MAINWINDOW_H

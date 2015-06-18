@@ -126,7 +126,7 @@
     <string>&amp;Afsluiten</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Q, Ctrl+W</string>
+    <string>Ctrl+Q</string>
    </property>
   </action>
   <action name="action_Nieuw">
