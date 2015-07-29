@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include "entrydialog.h"
+#include "descriptiondialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -174,4 +175,33 @@ void MainWindow::closeEvent(QCloseEvent *e)
         }
     }
     e->accept();
+}
+
+void MainWindow::on_action_Nieuw_2_triggered()
+{
+    on_btnNew_clicked();
+}
+
+void MainWindow::on_actionB_ewerk_triggered()
+{
+    on_btnEdit_clicked();
+}
+
+void MainWindow::on_actionVerwij_der_triggered()
+{
+    on_btnDelete_clicked();
+}
+
+void MainWindow::on_actionExporteer_pdf_triggered()
+{
+    on_btnPdf_clicked();
+}
+
+void MainWindow::on_action_Beschrijving_triggered()
+{
+    DescriptionDialog dialog(_model, this);
+    int result = dialog.exec();
+    if (result == 1) {
+        _model->setDescription(dialog.description());
+    }
 }

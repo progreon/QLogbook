@@ -93,9 +93,22 @@
     <addaction name="action_Save"/>
     <addaction name="action_Save_As"/>
     <addaction name="separator"/>
+    <addaction name="actionExporteer_pdf"/>
+    <addaction name="separator"/>
     <addaction name="actionE_xit"/>
    </widget>
+   <widget class="QMenu" name="menuB_ewerken">
+    <property name="title">
+     <string>B&amp;ewerken</string>
+    </property>
+    <addaction name="action_Nieuw_2"/>
+    <addaction name="actionB_ewerk"/>
+    <addaction name="actionVerwij_der"/>
+    <addaction name="separator"/>
+    <addaction name="action_Beschrijving"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menuB_ewerken"/>
   </widget>
   <action name="action_Open">
    <property name="text">
@@ -135,6 +148,34 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+N</string>
+   </property>
+  </action>
+  <action name="action_Nieuw_2">
+   <property name="text">
+    <string>&amp;Nieuw...</string>
+   </property>
+  </action>
+  <action name="actionB_ewerk">
+   <property name="text">
+    <string>B&amp;ewerk...</string>
+   </property>
+  </action>
+  <action name="actionVerwij_der">
+   <property name="text">
+    <string>Verwij&amp;der</string>
+   </property>
+  </action>
+  <action name="actionExporteer_pdf">
+   <property name="text">
+    <string>&amp;Exporteer pdf...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+E</string>
+   </property>
+  </action>
+  <action name="action_Beschrijving">
+   <property name="text">
+    <string>&amp;Beschrijving...</string>
    </property>
   </action>
  </widget>

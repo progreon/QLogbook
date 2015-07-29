@@ -36,6 +36,16 @@ private slots:
 
     void on_actionE_xit_triggered();
 
+    void on_action_Nieuw_2_triggered();
+
+    void on_actionB_ewerk_triggered();
+
+    void on_actionVerwij_der_triggered();
+
+    void on_actionExporteer_pdf_triggered();
+
+    void on_action_Beschrijving_triggered();
+
 private:
     void updateView();
     Ui::MainWindow *ui;

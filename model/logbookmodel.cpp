@@ -65,7 +65,7 @@ bool LogbookModel::exportLogbookPDF(const QString &fileName)
 
         QTextDocument *document = new QTextDocument();
         QTextCursor cursor(document);
-        cursor.insertText("Dit is een gegenereerd logboek.\n\n");
+        cursor.insertText(_description.append("\n\n"));
         QTextTableFormat tableFormat;
         tableFormat.setCellSpacing(0);
         tableFormat.setCellPadding(3);
@@ -123,6 +123,7 @@ void LogbookModel::loadLogbookJSON(const QString &fileName)
         jsonFile.close();
         QJsonObject jsonLogbook = jsonDoc.object();
 
+        _description = jsonLogbook["description"].toString();
         _types = QList<EntryType>();
         _entries = QList<LogEntry>();
 
@@ -169,6 +170,7 @@ void LogbookModel::saveAsLogbookJSON(const QString &fileName)
 {
     QJsonObject jsonLogbook;
 
+    jsonLogbook["description"] = _description;
     jsonLogbook["numentrytypes"] = _types.count();
 
     QJsonArray jsonEntryTypes;
@@ -206,8 +208,14 @@ void LogbookModel::saveAsLogbookJSON(const QString &fileName)
     }
 }
 
+void LogbookModel::setDescription(const QString &description)
+{
+    _description = description;
+}
+
 void LogbookModel::startEmptyLogbook()
 {
+    _description = "Dit is een gegenereerd logboek.";
     _types = QList<EntryType>();
     _entries = QList<LogEntry>();
     _types << EntryType(0, "Literatuur");
