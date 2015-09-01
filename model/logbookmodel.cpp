@@ -65,7 +65,8 @@ bool LogbookModel::exportLogbookPDF(const QString &fileName)
 
         QTextDocument *document = new QTextDocument();
         QTextCursor cursor(document);
-        cursor.insertText(_description.append("\n\n"));
+        cursor.insertHtml(QString(_description).append("<br><br>"));
+//        cursor.insertText(QString(_description).append("\n\n"));
         QTextTableFormat tableFormat;
         tableFormat.setCellSpacing(0);
         tableFormat.setCellPadding(3);
