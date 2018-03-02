@@ -47,6 +47,65 @@ void LogbookModel::deleteEntry(int index)
     }
 }
 
+QVector<double> LogbookModel::durations()
+{
+    QVector<double> totals(_types.count(), 0);
+
+    for (int i = 0; i < _entries.count(); i++) {
+        LogEntry entry = _entries.at(i);
+        totals[entry.type().id()] += entry.duration().hour() + entry.duration().minute() / 60.0;
+    }
+
+    return totals;
+}
+
+bool LogbookModel::exportLogbookCSV(const QString &fileName)
+{
+    int i = fileName.lastIndexOf(QDir::separator());
+    QString folderURI;
+    if (i >= 0) {
+        folderURI = fileName.left(i+1);
+    } else {
+        folderURI = ".";
+    }
+    QDir folder(folderURI);
+    if (folder.exists()) {
+        QFile file(fileName);
+
+        if (file.open(QFile::WriteOnly)) {
+            QTextStream stream(&file);
+
+            QString header(";Datum;Duur (h);Type;Beschrijving");
+            stream << header << endl;
+
+            for (int row = 0; row < _entries.count(); row++) {
+                LogEntry entry = _entries.at(row);
+                QString string(QString::number(row+1));
+                string.append(entry.date().toString(";dd/MM/yyyy"));
+                string.append(";" + QString::number(entry.duration().hour() + entry.duration().minute() / 60.0));
+                string.append(";" + entry.type().name());
+                string.append(";" + entry.description());
+
+                stream << string << endl;
+            }
+
+            stream << endl;
+            QString total("Totalen");
+            QVector<double> totals = durations();
+            for (int i=0; i<durations().size(); i++) {
+                total.append(";" + _types.at(i).name()).append(";" + QString::number(totals.at(i))).append("\n");
+            }
+            stream << total << endl;
+
+            file.close();
+        }
+
+        return true;
+    } else {
+        return false;
+    }
+}
+
 bool LogbookModel::exportLogbookPDF(const QString &fileName)
 {
     int i = fileName.lastIndexOf(QDir::separator());

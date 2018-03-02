@@ -14,7 +14,9 @@ public:
     QString currentOpenFile() const;
     void deleteEntry(int index);
     QString description() const {return _description;}
+    QVector<double> durations();
     const QList<LogEntry> *entries() const {return &_entries;}
+    bool exportLogbookCSV(const QString &fileName);
     bool exportLogbookPDF(const QString &fileName);
     bool isEdited() const {return _isEdited;}
     bool isNew() const {return _isNew;}

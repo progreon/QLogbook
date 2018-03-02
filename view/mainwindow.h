@@ -46,7 +46,10 @@ private slots:
 
     void on_action_Beschrijving_triggered();
 
+    void on_actionExporter_csv_triggered();
+
 private:
+    void updateTotals();
     void updateView();
     Ui::MainWindow *ui;
     LogbookModel *_model;

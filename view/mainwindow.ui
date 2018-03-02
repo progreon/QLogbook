@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>578</width>
-    <height>327</height>
+    <height>410</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,6 +36,13 @@
         </property>
         <property name="horizontalScrollMode">
          <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="lblTotal">
+        <property name="text">
+         <string>TextLabel</string>
         </property>
        </widget>
       </item>
@@ -94,6 +101,7 @@
     <addaction name="action_Save_As"/>
     <addaction name="separator"/>
     <addaction name="actionExporteer_pdf"/>
+    <addaction name="actionExporter_csv"/>
     <addaction name="separator"/>
     <addaction name="actionE_xit"/>
    </widget>
@@ -176,6 +184,11 @@
   <action name="action_Beschrijving">
    <property name="text">
     <string>&amp;Beschrijving...</string>
+   </property>
+  </action>
+  <action name="actionExporter_csv">
+   <property name="text">
+    <string>Exporter &amp;csv...</string>
    </property>
   </action>
  </widget>

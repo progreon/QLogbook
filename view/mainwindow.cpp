@@ -129,11 +129,27 @@ void MainWindow::on_action_Open_triggered()
     }
 }
 
+void MainWindow::updateTotals()
+{
+    if (_model->entries()->count() > 0) {
+        QVector<double> totals = _model->durations();
+
+        QString str("Totaal: ");
+        for (int i = 0; i < _model->types().count(); i++) {
+            str.append(_model->types().at(i).name()).append(": ").append(QString::number(totals.at(i))).append("h ");
+        }
+        ui->lblTotal->setText(str);
+    } else {
+        ui->lblTotal->setText("");
+    }
+}
+
 void MainWindow::updateView()
 {
     setWindowTitle(windowTitle + QString(" - ") + QString(_model->isEdited()?" *":" ") + _model->currentOpenFile());
     ui->tableView->resizeColumnsToContents();
     ui->tableView->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    updateTotals();
 }
 
 void MainWindow::on_action_Nieuw_triggered()
@@ -203,5 +219,21 @@ void MainWindow::on_action_Beschrijving_triggered()
     int result = dialog.exec();
     if (result == 1) {
         _model->setDescription(dialog.description());
+    }
+}
+
+void MainWindow::on_actionExporter_csv_triggered()
+{
+    QString fileName = _model->currentOpenFile().right(_model->currentOpenFile().count() - _model->currentOpenFile().lastIndexOf(QDir::separator()) - 1);
+    if (fileName.endsWith(".qlog")) {
+        fileName = fileName.left(fileName.lastIndexOf(".qlog"));
+    }
+    QFileDialog fileDialog(this, "Exporteer csv", currDir.append(QDir::separator()).append(fileName).append(".csv"), tr("CSV Bestanden (*.csv)"));
+    fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+    if (fileDialog.exec() == QFileDialog::AcceptSave) {
+        QString filePath = fileDialog.selectedFiles().at(0);
+        qDebug() << "exporting csv to:" << filePath;
+        _model->exportLogbookCSV(filePath);
+        currDir = fileDialog.directory().absolutePath();
     }
 }
